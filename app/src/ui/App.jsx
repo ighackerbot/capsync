@@ -115,7 +115,7 @@ export default function App() {
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '360px 1fr', gap: 16, padding: 16, flex: 1, minHeight: 0 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <h2 style={{ margin: 0 }}>Remotion Captioner</h2>
+          <h2 style={{ margin: 0 }}>CaptionFlow</h2>
           <button onClick={toggleTheme} aria-label="Toggle theme">
             Theme: {theme === 'light' ? 'Light' : 'Dark'}
           </button>
@@ -124,7 +124,7 @@ export default function App() {
             {isTranscribing ? 'Transcribing…' : 'Generate Captions'}
           </button>
           <CaptionStyleSelector value={styleKey} onChange={setStyleKey} />
-          <button onClick={onRender} disabled={!videoUrl || segments.length === 0}>Render MP4</button>
+          <button onClick={onRender} disabled={!videoUrl || segments.length === 0}>Download in MP4</button>
           <div style={{ color: 'var(--muted)', fontSize: 12 }}>
             Hinglish supported. Fonts: Noto Sans + Noto Sans Devanagari.
           </div>
