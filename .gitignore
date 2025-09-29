@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+**/node_modules/
+app/node_modules/
+render/node_modules/
+
+# Build outputs
+app.out
+server.out
+dist/
+build/
+*.log
+
+# Python
+server/venv/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Remotion
+app/src/video/out/
+app/src/video/*_frames/
