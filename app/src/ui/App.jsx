@@ -39,6 +39,31 @@ export default function App() {
     }
   };
 
+  const [isDragging, setIsDragging] = useState(false);
+  const onDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    const f = e.dataTransfer.files?.[0];
+    if (!f) return;
+    if (!fileRef.current) return;
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(f);
+    fileRef.current.files = dataTransfer.files;
+    const evt = new Event('change', { bubbles: true });
+    fileRef.current.dispatchEvent(evt);
+  };
+  const onDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+  const onDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
   const onGenerate = async () => {
     if (!fileRef.current?.files?.[0]) return;
     setIsTranscribing(true);
@@ -87,64 +112,57 @@ export default function App() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <div
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 10,
-          background: 'var(--bg)',
-          borderBottom: '1px solid var(--panel-border)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '12px 16px'
-        }}
-      >
-        <h1
-          style={{
-            margin: 0,
-            fontSize: 22,
-            fontWeight: 800,
-            letterSpacing: 0.5,
-            textTransform: 'uppercase',
-            color: 'var(--fg)'
-          }}
-        >
-          capsync
-        </h1>
+      <div className="navbar">
+        <div className="brand" aria-label="Capsync">
+          <span className="brand-mark" />
+          <span>capsync</span>
+        </div>
+        <button className="btn btn-ghost" onClick={toggleTheme} aria-label="Toggle theme">
+          Theme: {theme === 'light' ? 'Light' : 'Dark'}
+        </button>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '360px 1fr', gap: 16, padding: 16, flex: 1, minHeight: 0 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="content-grid" style={{ flex: 1 }}>
+        <div className="card controls-card">
           <h2 style={{ margin: 0 }}>CaptionFlow</h2>
-          <button onClick={toggleTheme} aria-label="Toggle theme">
-            Theme: {theme === 'light' ? 'Light' : 'Dark'}
+
+          <div
+            className={`upload-dropzone ${isDragging ? 'dragging' : ''}`}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            role="button"
+            tabIndex={0}
+            onClick={() => fileRef.current?.click()}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') fileRef.current?.click(); }}
+            aria-label="Upload video via click or drag and drop"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 16V8m0 0l-3 3m3-3l3 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M20 16a4 4 0 00-3.8-4 5 5 0 00-9.4 0A4 4 0 004 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span>Drag and drop your MP4 here or <strong>browse</strong></span>
+            <input className="hidden-input" accept="video/mp4" type="file" ref={fileRef} onChange={onFileChange} />
+          </div>
+
+          <button className="btn" onClick={onGenerate} disabled={!fileRef.current?.files?.[0] || isTranscribing}>
+            {isTranscribing ? (
+              <span className="status"><span className="spinner" /> Transcribing…</span>
+            ) : (
+              'Generate Captions'
+            )}
           </button>
-          <input accept="video/mp4" type="file" ref={fileRef} onChange={onFileChange} />
-          <button onClick={onGenerate} disabled={!fileRef.current?.files?.[0] || isTranscribing}>
-            {isTranscribing ? 'Transcribing…' : 'Generate Captions'}
-          </button>
+
           <CaptionStyleSelector value={styleKey} onChange={setStyleKey} />
-          <button onClick={onRender} disabled={!videoUrl || segments.length === 0}>Download in MP4</button>
+
+          <button className="btn btn-primary" onClick={onRender} disabled={!videoUrl || segments.length === 0}>Download MP4</button>
+
           <div style={{ color: 'var(--muted)', fontSize: 12 }}>
             Hinglish supported. Fonts: Noto Sans + Noto Sans Devanagari.
           </div>
         </div>
+
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div
-            style={{
-              width: '100%',
-              maxWidth: 960,
-              aspectRatio: '16 / 9',
-              background: 'var(--panel-bg)',
-              border: '1px solid var(--panel-border)',
-              borderRadius: 12,
-              overflow: 'hidden',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
+          <div className="card video-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {videoUrl ? (
               <Player
                 component={CaptionComposition}
