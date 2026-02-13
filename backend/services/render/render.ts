@@ -14,7 +14,7 @@ const argv = yargs(hideBin(process.argv))
 type Segment = { id: string; start: number; end: number; text: string };
 
 async function main() {
-  const entry = path.join(process.cwd(), '..', 'app', 'src', 'video', 'remotion.js');
+  const entry = path.join(process.cwd(), '..', '..', '..', 'frontend', 'src', 'video', 'remotion.js');
   const bundleLocation = await bundle({ entryPoint: entry });
 
   let segments: Segment[] = [];

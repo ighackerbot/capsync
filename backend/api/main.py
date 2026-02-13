@@ -92,10 +92,11 @@ async def render_video(
             json.dump(data, cf, ensure_ascii=False)
 
         # Find render script
-        # project_root = server dir parent
-        server_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.abspath(os.path.join(server_dir, ".."))
-        render_dir = os.path.join(project_root, "render")
+        # project_root = backend/api dir parent's parent
+        api_dir = os.path.dirname(os.path.abspath(__file__))
+        backend_dir = os.path.abspath(os.path.join(api_dir, ".."))
+        project_root = os.path.abspath(os.path.join(backend_dir, ".."))
+        render_dir = os.path.join(backend_dir, "services", "render")
         render_ts = os.path.join(render_dir, "render.ts")
 
         # Ensure node and npx are available

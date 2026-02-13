@@ -1,8 +1,8 @@
 # Dependencies
 node_modules/
 **/node_modules/
-app/node_modules/
-render/node_modules/
+frontend/node_modules/
+backend/services/render/node_modules/
 
 # Build outputs
 app.out
@@ -12,7 +12,8 @@ build/
 *.log
 
 # Python
-server/venv/
+backend/api/venv/
+backend/api/.venv/
 **/__pycache__/
 *.pyc
 *.pyo
@@ -28,5 +29,5 @@ server/venv/
 .idea/
 
 # Remotion
-app/src/video/out/
-app/src/video/*_frames/
+frontend/src/video/out/
+frontend/src/video/*_frames/

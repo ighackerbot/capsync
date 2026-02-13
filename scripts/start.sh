@@ -23,7 +23,7 @@ echo "Using frontend port: $FRONTEND_PORT"
 
 # ---------- Backend: FastAPI (faster-whisper) ----------
 echo "[backend] ensuring Python 3.11 venv and deps..."
-cd "$ROOT_DIR/server"
+cd "$ROOT_DIR/backend/api"
 if ! command -v /opt/homebrew/bin/python3.11 >/dev/null 2>&1; then
   echo "Python 3.11 not found at /opt/homebrew/bin/python3.11. Install with: brew install python@3.11" >&2
   exit 1
@@ -42,7 +42,7 @@ echo "[backend] pid=$BACK_PID (logs: $ROOT_DIR/server.out)"
 
 # ---------- Frontend: Vite (Remotion UI) ----------
 echo "[frontend] installing deps if needed..."
-cd "$ROOT_DIR/app"
+cd "$ROOT_DIR/frontend"
 npm install --silent
 
 echo "[frontend] starting Vite on http://localhost:${FRONTEND_PORT} ..."
