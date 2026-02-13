@@ -11,6 +11,10 @@ dist/
 build/
 *.log
 
+# Environment variables
+.env
+.env.local
+
 # Python
 backend/api/venv/
 backend/api/.venv/
