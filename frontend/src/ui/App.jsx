@@ -126,7 +126,20 @@ export default function App() {
       {/* Navbar */}
       <nav className="navbar">
         <div className="brand">
-          <div className="brand-mark" />
+          <svg width="40" height="40" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="playGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style={{ stopColor: '#3B82F6', stopOpacity: 1 }} />
+                <stop offset="100%" style={{ stopColor: '#8B5CF6', stopOpacity: 1 }} />
+              </linearGradient>
+            </defs>
+            <path d="M16 10L34 24L16 38V10Z" fill="url(#playGradient)" />
+            <path d="M10 20C12 18 14 16 16 15M10 28C12 30 14 32 16 33M32 15C34 16 36 18 38 20M32 33C34 32 36 30 38 28"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              opacity="0.9" />
+          </svg>
           <span className="gradient-text">CAPSYNC</span>
         </div>
         <button className="btn btn-ghost" onClick={toggleTheme} aria-label="Toggle theme">

@@ -300,7 +300,30 @@ export FRONTEND_PORT=5173                      # Custom frontend port
 
 ## 🌐 Deployment
 
-### Option 1: Docker Deployment (Recommended)
+### Quick Deploy to Vercel (Recommended) ⚡
+
+Deploy both frontend AND backend to Vercel with one command:
+
+```bash
+npm i -g vercel
+vercel --prod
+```
+
+✨ **Why Vercel?**
+- Deploy frontend + backend together
+- Automatic HTTPS & CDN
+- Serverless backend functions
+- Free tier available
+- GitHub auto-deployment
+
+📖 **[Complete Vercel Guide →](VERCEL_DEPLOYMENT.md)**
+
+### Other Deployment Options
+
+- **Docker** - Full containerization ([Guide](DEPLOYMENT.md#docker-deployment))
+- **Railway** - Backend only ($5/month)
+- **Render** - Full-stack ($7/month)  
+- **VPS** - Ubuntu + Nginx (Full control)
 
 #### Create Dockerfile for Backend
 
