@@ -10,7 +10,16 @@ import subprocess
 import shutil
 from faster_whisper import WhisperModel
 
-app = FastAPI(title="Hinglish Whisper STT")
+# Configuration
+MODEL_NAME = os.environ.get("WHISPER_MODEL", "small")
+COMPUTE_TYPE = os.environ.get("WHISPER_COMPUTE", "int8")
+PORT = int(os.environ.get("PORT", 8000))
+
+app = FastAPI(
+    title="Capsync API",
+    description="AI-powered video captioning with Whisper",
+    version="1.0.0"
+)
 
 app.add_middleware(
     CORSMiddleware,

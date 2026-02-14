@@ -4,9 +4,9 @@ WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+  ffmpeg \
+  curl \
+  && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python packages
 COPY requirements.txt .
@@ -26,4 +26,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD curl -f http://localhost:8000/ || exit 1
 
 # Run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}
+
