@@ -300,29 +300,31 @@ export FRONTEND_PORT=5173                      # Custom frontend port
 
 ## 🌐 Deployment
 
-### Quick Deploy to Vercel (Recommended) ⚡
+### Quick Deploy to Google Cloud (Recommended) ⚡
 
-Deploy both frontend AND backend to Vercel with one command:
+Deploy both frontend AND backend to GCP Cloud Run with one script:
 
 ```bash
-npm i -g vercel
-vercel --prod
+# One-command deployment
+./deploy-gcp.sh
 ```
 
-✨ **Why Vercel?**
-- Deploy frontend + backend together
-- Automatic HTTPS & CDN
-- Serverless backend functions
-- Free tier available
-- GitHub auto-deployment
+✨ **Why Google Cloud?**
+- Auto-scaling (0 to N)
+- Pay only for actual usage
+- Enterprise-grade infrastructure
+- Built-in HTTPS & CDN
+- Free tier: 2M requests/month
+- Global deployment
 
-📖 **[Complete Vercel Guide →](VERCEL_DEPLOYMENT.md)**
+📖 **[Complete GCP Guide →](GCP_DEPLOYMENT.md)**
 
-### Other Deployment Options
+### Alternative Deployment Options
 
+- **Cloud Run** - Containerized, serverless ([Guide](GCP_DEPLOYMENT.md#option-1-cloud-run-recommended))
+- **App Engine** - Simple PaaS deployment
+- **Vercel + Railway** - Hybrid ($5/month) ([Guide](HYBRID_DEPLOYMENT.md))
 - **Docker** - Full containerization ([Guide](DEPLOYMENT.md#docker-deployment))
-- **Railway** - Backend only ($5/month)
-- **Render** - Full-stack ($7/month)  
 - **VPS** - Ubuntu + Nginx (Full control)
 
 #### Create Dockerfile for Backend
