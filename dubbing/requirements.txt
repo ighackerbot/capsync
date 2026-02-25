@@ -1,0 +1,47 @@
+# ---------------------------------------------------------------------------
+# dubbing/requirements.txt — Python dependencies for the Hindi dubbing pipeline
+#
+# Install on Google Colab:
+#   pip install -r requirements.txt
+#
+# NOTE: Some dependencies (ffmpeg, rubberband-cli) are system packages.
+#   On Colab they are already installed or can be added with:
+#     apt-get install -y ffmpeg rubberband-cli
+# ---------------------------------------------------------------------------
+
+# ── Whisper (speech-to-text) ─────────────────────────────────────────────
+# faster-whisper is a CTranslate2-optimized Whisper — 4× faster, less VRAM.
+# Already used by the existing capsync backend.
+faster-whisper>=1.0.0
+
+# ── IndicTrans2 (English → Hindi translation) ────────────────────────────
+# HuggingFace transformers loads the IndicTrans2 model.
+# sentencepiece is the tokenizer backend used by IndicTrans2.
+transformers>=4.36.0
+sentencepiece>=0.1.99
+torch>=2.0.0
+
+# ── Coqui TTS / XTTS v2 (voice cloning) ─────────────────────────────────
+# The TTS package includes XTTS v2, HiFi-GAN vocoder, and speaker encoder.
+# It downloads model checkpoints on first use (~1.8 GB).
+TTS>=0.22.0
+
+# ── Duration matching (pitch-preserving time-stretch) ────────────────────
+# soundfile: read/write WAV files (used by pyrubberband and duration_match).
+# pyrubberband: Python wrapper around Rubber Band Library (best quality).
+#   Requires system package: apt-get install -y rubberband-cli
+# If pyrubberband is not available, we fall back to ffmpeg's atempo filter.
+soundfile>=0.12.0
+pyrubberband>=0.3.0
+
+# ── GFPGAN (face restoration / enhancement) ──────────────────────────────
+# gfpgan brings in basicsr, realesrgan, and facexlib as dependencies.
+# Downloads the GFPGANv1.4 model on first use (~350 MB).
+gfpgan>=1.3.8
+
+# ── OpenCV (frame-by-frame video processing) ─────────────────────────────
+# Used by enhance.py to read/write individual video frames.
+opencv-python>=4.8.0
+
+# ── Utilities ─────────────────────────────────────────────────────────────
+numpy>=1.23.0

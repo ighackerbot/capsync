@@ -298,234 +298,76 @@ export FRONTEND_PORT=5173                      # Custom frontend port
 
 ---
 
-## 🌐 Deployment
+## 🐳 Deployment (Docker)
 
-### Quick Deploy to Google Cloud (Recommended) ⚡
-
-Deploy both frontend AND backend to GCP Cloud Run with one script:
+### Quick Deploy
 
 ```bash
-# One-command deployment
-./deploy-gcp.sh
-```
+# Clone and deploy
+git clone https://github.com/ighackerbot/capsync.git
+cd capsync
 
-✨ **Why Google Cloud?**
-- Auto-scaling (0 to N)
-- Pay only for actual usage
-- Enterprise-grade infrastructure
-- Built-in HTTPS & CDN
-- Free tier: 2M requests/month
-- Global deployment
-
-📖 **[Complete GCP Guide →](GCP_DEPLOYMENT.md)**
-
-### Alternative Deployment Options
-
-- **Cloud Run** - Containerized, serverless ([Guide](GCP_DEPLOYMENT.md#option-1-cloud-run-recommended))
-- **App Engine** - Simple PaaS deployment
-- **Vercel + Railway** - Hybrid ($5/month) ([Guide](HYBRID_DEPLOYMENT.md))
-- **Docker** - Full containerization ([Guide](DEPLOYMENT.md#docker-deployment))
-- **VPS** - Ubuntu + Nginx (Full control)
-
-#### Create Dockerfile for Backend
-
-```dockerfile
-# backend/api/Dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements and install Python packages
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application code
-COPY . .
-
-# Expose port
-EXPOSE 8000
-
-# Run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-#### Create Dockerfile for Frontend
-
-```dockerfile
-# frontend/Dockerfile
-FROM node:18-alpine as builder
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-RUN npm ci
-
-# Copy source code
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Production stage
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-#### Docker Compose
-
-```yaml
-# docker-compose.yml
-version: '3.8'
-
-services:
-  backend:
-    build: ./backend/api
-    ports:
-      - "8000:8000"
-    environment:
-      - WHISPER_MODEL=small
-      - WHISPER_COMPUTE=int8
-    volumes:
-      - ./backend/models:/app/models
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "80:80"
-    environment:
-      - VITE_API_BASE=http://backend:8000
-    depends_on:
-      - backend
-```
-
-```bash
-# Deploy with Docker Compose
+# Start everything
 docker-compose up -d
 ```
 
----
+That's it! Frontend at `http://localhost`, API at `http://localhost:8000`.
 
-### Option 2: Cloud Platform Deployment
+### Configuration
 
-#### Vercel (Frontend)
-
-```bash
-# Install Vercel CLI
-npm install -g vercel
-
-# Deploy from frontend directory
-cd frontend
-vercel --prod
-```
-
-**Environment Variables:**
-- `VITE_API_BASE`: Your backend URL
-
-#### Railway (Backend)
-
-1. Connect GitHub repository to Railway
-2. Select `backend/api` as root directory
-3. Add environment variables:
-   - `WHISPER_MODEL=small`
-   - `PORT=8000`
-4. Deploy
-
-#### Render (Full-Stack)
-
-**Backend Service:**
-- Build Command: `pip install -r requirements.txt`
-- Start Command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-- Root Directory: `backend/api`
-
-**Frontend Service:**
-- Build Command: `npm install && npm run build`
-- Start Command: `npm run preview`
-- Root Directory: `frontend`
-
----
-
-### Option 3: VPS Deployment (Ubuntu)
+Create a `.env` file in the project root:
 
 ```bash
-# Install dependencies
-sudo apt update
-sudo apt install -y python3.11 python3.11-venv nodejs npm ffmpeg nginx
+# Whisper AI model (tiny, base, small, medium, large)
+WHISPER_MODEL=small
+WHISPER_COMPUTE=int8
 
-# Setup backend
-cd /var/www/capsync/backend/api
-python3.11 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+# Frontend → Backend connection
+VITE_API_BASE=http://localhost:8000
 
-# Setup systemd service for backend
-sudo nano /etc/systemd/system/capsync-backend.service
+# Docker project name
+COMPOSE_PROJECT_NAME=capsync
 ```
 
-**Backend Service File:**
-```ini
-[Unit]
-Description=Capsync Backend API
-After=network.target
-
-[Service]
-User=www-data
-WorkingDirectory=/var/www/capsync/backend/api
-Environment="WHISPER_MODEL=small"
-ExecStart=/var/www/capsync/backend/api/.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000
-
-[Install]
-WantedBy=multi-user.target
-```
+### Common Commands
 
 ```bash
-# Start backend service
-sudo systemctl enable capsync-backend
-sudo systemctl start capsync-backend
+# Start services
+docker-compose up -d
 
-# Setup frontend
-cd /var/www/capsync/frontend
-npm install
-npm run build
+# View logs
+docker-compose logs -f
 
-# Configure Nginx
-sudo nano /etc/nginx/sites-available/capsync
+# Rebuild after code changes
+docker-compose up -d --build
+
+# Stop services
+docker-compose down
+
+# Stop and remove volumes
+docker-compose down -v
 ```
 
-**Nginx Configuration:**
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
+### Production Deployment
 
-    location / {
-        root /var/www/capsync/frontend/dist;
-        try_files $uri $uri/ /index.html;
-    }
-
-    location /api {
-        proxy_pass http://localhost:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
+For production, update `VITE_API_BASE` in `.env` to your domain and rebuild:
 
 ```bash
-# Enable site and restart Nginx
-sudo ln -s /etc/nginx/sites-available/capsync /etc/nginx/sites-enabled/
-sudo systemctl restart nginx
+VITE_API_BASE=https://api.yourdomain.com docker-compose up -d --build
 ```
+
+### Individual Container Build
+
+```bash
+# Backend only
+docker build -t capsync-backend -f backend/api/Dockerfile backend/api
+docker run -p 8000:8000 -e WHISPER_MODEL=small capsync-backend
+
+# Frontend only
+docker build -t capsync-frontend --build-arg VITE_API_BASE=http://localhost:8000 -f frontend/Dockerfile frontend
+docker run -p 80:80 capsync-frontend
+```
+
 
 ---
 

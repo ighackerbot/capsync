@@ -35,4 +35,3 @@ backend/api/.venv/
 # Remotion
 frontend/src/video/out/
 frontend/src/video/*_frames/
-.vercel

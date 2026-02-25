@@ -4,5 +4,4 @@ faster-whisper==1.0.3
 numpy>=1.23.0
 python-multipart==0.0.9
 ffmpeg-python==0.2.0
-mangum>=0.17.0
 requests>=2.31.0
